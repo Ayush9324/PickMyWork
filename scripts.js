@@ -44,9 +44,22 @@ signinModal.addEventListener('click', (e) => {
   }
 });
 
-// Google sign-in button functionality
+// Google sign-in button functionality using Google Identity Services
 const googleBtn = document.getElementById('googleSignInBtn');
 googleBtn.addEventListener('click', () => {
-  // Replace the URL below with your real Google OAuth URL if you have one
-  window.open('https://accounts.google.com/signin', '_blank');
+  google.accounts.id.initialize({
+    client_id: '555803378773-m8v8fe09a8s0in54hb2nf76ac885hrus.apps.googleusercontent.com',
+    callback: handleGoogleResponse
+  });
+  google.accounts.id.prompt();
 });
+
+function handleGoogleResponse(response) {
+  // response.credential is a JWT ID token
+  // Decode the token to get user info (for demo, we'll just alert the token)
+  // In production, send this token to your backend for verification
+  const idToken = response.credential;
+  // Optionally decode the JWT to get the user's email (for demo only)
+  const payload = JSON.parse(atob(idToken.split('.')[1]));
+  alert('Google sign-in successful! Email: ' + payload.email);
+}
